@@ -10,7 +10,7 @@ class SignaturePainter extends CustomPainter {
       ..color = Colors.black
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
-    int start = points.length - 10;
+    int start = points.length - 20;
     if (start < 0) {
       start = 0;
     }
