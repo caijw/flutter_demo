@@ -35,7 +35,15 @@ class SignatureState extends State<Signature> {
     return new Stack(
       children: [
         GestureDetector(
+          onPanStart: (DragStartDetails details) {
+            int currTime = new DateTime.now().microsecondsSinceEpoch;
+            int touchTime = details.sourceTimeStamp.inMicroseconds;
+            print("[dart][flutter app][main.dart][onPanStart]currTime ${currTime}, touchTime ${touchTime}, Transmission time ${currTime - touchTime} microseconds");
+          },
           onPanUpdate: (DragUpdateDetails details) {
+            int currTime = new DateTime.now().microsecondsSinceEpoch;
+            int touchTime = details.sourceTimeStamp.inMicroseconds;
+            print("[dart][flutter app][main.dart][onPanUpdate]currTime ${currTime}, touchTime ${touchTime}, Transmission time ${currTime - touchTime} microseconds");
             RenderBox referenceBox = context.findRenderObject();
             Offset localPosition =
             referenceBox.globalToLocal(details.globalPosition);
@@ -44,7 +52,11 @@ class SignatureState extends State<Signature> {
               _points = new List.from(_points)..add(localPosition);
             });
           },
-          onPanEnd: (DragEndDetails details) => _points.add(null),
+          onPanEnd: (DragEndDetails details) {
+            int currTime = new DateTime.now().microsecondsSinceEpoch;
+            print("[dart][flutter app][main.dart][onPanEnd]currTime ${currTime}");
+             _points.add(null);
+          },
         ),
         CustomPaint(painter: new SignaturePainter(_points))
       ],
