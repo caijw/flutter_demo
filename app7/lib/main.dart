@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:rxdart/rxdart.dart';
+
+
 
 class SignaturePainter extends CustomPainter {
   SignaturePainter(this.points);
@@ -10,7 +14,7 @@ class SignaturePainter extends CustomPainter {
       ..color = Colors.black
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
-    int start = points.length - 10;
+    int start = points.length - 15;
     if (start < 0) {
       start = 0;
     }
@@ -31,6 +35,18 @@ class Signature extends StatefulWidget {
 class SignatureState extends State<Signature> {
   List<Offset> _points = <Offset>[];
 
+  @override
+  void initState() {
+    super.initState();
+    _counterSubject.throttleTime(Duration(milliseconds: 50)).listen((Offset localPosition) {
+      print(1);
+      setState(() {
+        _points = new List.from(_points);
+      });
+    });
+  }
+  final _counterSubject = BehaviorSubject<Offset>();
+
   Widget build(BuildContext context) {
     return new Stack(
       children: [
@@ -47,10 +63,13 @@ class SignatureState extends State<Signature> {
             RenderBox referenceBox = context.findRenderObject();
             Offset localPosition =
             referenceBox.globalToLocal(details.globalPosition);
-
-            setState(() {
-              _points = new List.from(_points)..add(localPosition);
-            });
+            _counterSubject.add(localPosition);
+            print(2);
+            _points = new List.from(_points)..add(localPosition);
+            // setState(() {
+            //   _points = new List.from(_points)..add(localPosition);
+            // });
+          
           },
           onPanEnd: (DragEndDetails details) {
             int currTime = new DateTime.now().microsecondsSinceEpoch;
