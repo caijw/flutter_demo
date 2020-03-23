@@ -18,7 +18,7 @@ class SignaturePainter extends CustomPainter {
     if (start < 0) {
       start = 0;
     }
-    // start = 0;
+    start = 0;
     for (int i = start; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null)
         canvas.drawLine(points[i], points[i + 1], paint);
