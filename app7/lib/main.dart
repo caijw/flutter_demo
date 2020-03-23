@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-
+import 'package:touch_indicator/touch_indicator.dart';
 
 bool useThrottle = true;
 bool useDrawPath = true;
@@ -109,4 +109,10 @@ class DemoApp extends StatelessWidget {
   Widget build(BuildContext context) => new Scaffold(body: new Signature());
 }
 
-void main() => runApp(new MaterialApp(home: new DemoApp()));
+void main() {
+  runApp(new MaterialApp(
+    home: TouchIndicator(
+      child: new DemoApp(),
+    )
+  ));
+}
