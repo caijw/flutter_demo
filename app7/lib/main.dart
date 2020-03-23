@@ -17,8 +17,8 @@ class MyWidgetState extends State<MyWidget> {
   int counter = 0;
   List<String> strings = ['Flutter', 'is', 'cool', "and", "awesome!"];
   String displayedString = "Hello World!";
-  double _x = 0;
-  double _y = 0;
+  double _x = 30;
+  double _y = 30;
 
   void onPressOfButton() {
     setState(() {
@@ -45,10 +45,10 @@ class MyWidgetState extends State<MyWidget> {
               RenderBox referenceBox = context.findRenderObject();
               Offset localPosition =
                   referenceBox.globalToLocal(details.globalPosition);
-              print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
+              // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
               setState(() {
-                _x = localPosition.dx;
-                _y = localPosition.dy;
+                _x = localPosition.dx - 5;
+                _y = localPosition.dy - 5;
               });
             }),
       ),
