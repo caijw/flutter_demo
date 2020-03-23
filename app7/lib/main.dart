@@ -32,7 +32,7 @@ class SignaturePainter extends CustomPainter {
     Path path = Path();
     for (int i = 0; i < points.length; i++) {
       if (points[i] == null) {
-        break;
+        continue;
       }
       if (i + 1 < points.length && points[i + 1] != null) {
         Path tmpPath = Path(); 
@@ -85,7 +85,7 @@ class SignatureState extends State<Signature> {
   @override
   void initState() {
     super.initState();
-    _counterSubject.throttleTime(Duration(milliseconds: 15), trailing: true).listen((Offset localPosition) {
+    _counterSubject.throttleTime(Duration(milliseconds: 60), trailing: true).listen((Offset localPosition) {
       print(1);
       setState(() {
         _points = _points;
@@ -121,7 +121,7 @@ class SignatureState extends State<Signature> {
           onPanEnd: (DragEndDetails details) {
             int currTime = new DateTime.now().microsecondsSinceEpoch;
             print("[dart][flutter app][main.dart][onPanEnd]currTime ${currTime}");
-             _points =  <Offset>[];
+            _points.add(null);
           },
         ),
         CustomPaint(painter: new SignaturePainter(_points))
