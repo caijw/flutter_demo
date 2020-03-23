@@ -10,11 +10,11 @@ class SignaturePainter extends CustomPainter {
       ..color = Colors.black
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
-    int start = points.length - 20;
+    int start = points.length - 10;
     if (start < 0) {
       start = 0;
     }
-    start = 0;
+    // start = 0;
     for (int i = start; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null)
         canvas.drawLine(points[i], points[i + 1], paint);
