@@ -85,7 +85,7 @@ class SignatureState extends State<Signature> {
   @override
   void initState() {
     super.initState();
-    _counterSubject.throttleTime(Duration(milliseconds: 60), trailing: true).listen((Offset localPosition) {
+    _counterSubject.throttleTime(Duration(milliseconds: 100), trailing: true).listen((Offset localPosition) {
       print(1);
       setState(() {
         _points = _points;
