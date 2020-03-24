@@ -1,125 +1,59 @@
-// Flutter code sample for Listener
-
-// This example makes a [Container] react to being touched, showing a count of
-// the number of pointer downs and ups.
+// 监听touch，设置元素的位置跟随手指
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter/widgets.dart';
-
-bool useGestureDetector = false;
-
-void main(List<String> args) {
-  print(args);
-  return runApp(MyApp());
+void main() {
+  runApp(MaterialApp(
+    home: MyWidget(),
+  ));
 }
 
-/// This Widget is the main application widget.
-class MyApp extends StatelessWidget {
-  static const String _title = 'Flutter Code Sample';
-
+class MyWidget extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        // appBar: AppBar(title: const Text(_title)),
-        body: MyStatefulWidget(),
-      ),
-    );
+  MyWidgetState createState() {
+    return MyWidgetState();
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
+class MyWidgetState extends State<MyWidget> {
+  int counter = 0;
+  List<String> strings = ['Flutter', 'is', 'cool', "and", "awesome!"];
+  String displayedString = "Hello World!";
+  double _x = 30;
+  double _y = 30;
 
-  @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _downCounter = 0;
-  int _upCounter = 0;
-  double x = 0.0;
-  double y = 0.0;
-
-  void onPointerDown(PointerEvent details) {
-    int currTime = new DateTime.now().microsecondsSinceEpoch;
-    int touchTime = details.timeStamp.inMicroseconds;
-    print('[dart][flutter app][main.dart][onPointerDown]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
-    // print(details);
-    onPointerMove(details);
+  void onPressOfButton() {
     setState(() {
-      _downCounter++;
-    });
-  }
-
-  void onPointerUp(PointerEvent details) {
-    int currTime = new DateTime.now().microsecondsSinceEpoch;
-    int touchTime = details.timeStamp.inMicroseconds;
-    print('[dart][flutter app][main.dart][onPointerUp]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
-    // print(details);
-    onPointerMove(details);
-    setState(() {
-      _upCounter++;
-    });
-  }
-
-  void onPointerMove(PointerEvent details) {
-    int currTime = new DateTime.now().microsecondsSinceEpoch;
-    int touchTime = details.timeStamp.inMicroseconds;
-    print('[dart][flutter app][main.dart][onPointerMove]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
-
-    // print(details);
-    setState(() {
-      x = details.position.dx;
-      y = details.position.dy;
+      displayedString = strings[counter];
+      counter = counter < 4 ? counter + 1 : 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget listenerWidget = Listener(
-      onPointerDown: onPointerDown,
-      onPointerMove: onPointerMove,
-      onPointerUp: onPointerUp,
-      child: Container(
-        color: Colors.lightBlueAccent,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              left: x,
-              top: y,
-              child: Icon(Icons.home, size: 40, color: Colors.black),
-            )
-          ],
-        ),
-      ),
-    );
-    if (useGestureDetector) {
-      return ConstrainedBox(
-        constraints: BoxConstraints.tight(Size(800.0, 400.0)),
+    return Scaffold(
+      body: Container(
         child: GestureDetector(
-          onPanUpdate: (DragUpdateDetails details) {
-            print('onPanUpdate');
-            print(details);
-            RenderBox referenceBox = context.findRenderObject();
-            Offset localPosition =
-                referenceBox.globalToLocal(details.globalPosition);
-            // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
-            setState(() {
-              x = localPosition.dx;
-              y = localPosition.dy;
-            });
-          },
-          child: listenerWidget,
-        ),
-      );
-    } else {
-      return ConstrainedBox(
-        constraints: BoxConstraints.tight(Size(800.0, 400.0)),
-        child: listenerWidget,
-      );
-    }
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  left: _x,
+                  top: _y,
+                  child: Icon(Icons.home, size: 40, color: Colors.black),
+                )
+              ],
+            ),
+            onPanUpdate: (DragUpdateDetails details) {
+              RenderBox referenceBox = context.findRenderObject();
+              Offset localPosition =
+                  referenceBox.globalToLocal(details.globalPosition);
+              // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
+              setState(() {
+                _x = localPosition.dx - 5;
+                _y = localPosition.dy - 5;
+              });
+            }),
+      ),
+    );
   }
 }
