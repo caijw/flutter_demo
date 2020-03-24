@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart';
 
+bool useGestureDetector = false;
+
 void main() => runApp(MyApp());
 
 /// This Widget is the main application widget.
@@ -39,6 +41,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   double y = 0.0;
 
   void _incrementDown(PointerEvent details) {
+    print('onPointerDown');
+    print(details);
     _updateLocation(details);
     setState(() {
       _downCounter++;
@@ -46,6 +50,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void _incrementUp(PointerEvent details) {
+    print('onPointerUp');
+    print(details);
     _updateLocation(details);
     setState(() {
       _upCounter++;
@@ -53,6 +59,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void _updateLocation(PointerEvent details) {
+    print('onPointerMove');
+    print(details);
     setState(() {
       x = details.position.dx;
       y = details.position.dy;
@@ -61,37 +69,47 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints.tight(Size(800.0, 400.0)),
-      child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
-          RenderBox referenceBox = context.findRenderObject();
-          Offset localPosition =
-              referenceBox.globalToLocal(details.globalPosition);
-          // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
-          setState(() {
-            x = localPosition.dx;
-            y = localPosition.dy;
-          });
-        },
-        child: Listener(
-          onPointerDown: _incrementDown,
-          onPointerMove: _updateLocation,
-          onPointerUp: _incrementUp,
-          child: Container(
-            color: Colors.lightBlueAccent,
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  left: x,
-                  top: y,
-                  child: Icon(Icons.home, size: 40, color: Colors.black),
-                )
-              ],
-            ),
-          ),
+    Widget listenerWidget = Listener(
+      onPointerDown: _incrementDown,
+      onPointerMove: _updateLocation,
+      onPointerUp: _incrementUp,
+      child: Container(
+        color: Colors.lightBlueAccent,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              left: x,
+              top: y,
+              child: Icon(Icons.home, size: 40, color: Colors.black),
+            )
+          ],
         ),
       ),
     );
+    if (useGestureDetector) {
+      return ConstrainedBox(
+        constraints: BoxConstraints.tight(Size(800.0, 400.0)),
+        child: GestureDetector(
+          onPanUpdate: (DragUpdateDetails details) {
+            print('onPanUpdate');
+            print(details);
+            RenderBox referenceBox = context.findRenderObject();
+            Offset localPosition =
+                referenceBox.globalToLocal(details.globalPosition);
+            // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
+            setState(() {
+              x = localPosition.dx;
+              y = localPosition.dy;
+            });
+          },
+          child: listenerWidget,
+        ),
+      );
+    } else {
+      return ConstrainedBox(
+        constraints: BoxConstraints.tight(Size(800.0, 400.0)),
+        child: listenerWidget,
+      );
+    }
   }
 }
