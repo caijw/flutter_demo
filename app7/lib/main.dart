@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart';
 
-bool useGestureDetector = false;
+bool useGestureDetector = true;
 
-void main() => runApp(MyApp());
+void main(List<String> args) {
+  print(args);
+  return runApp(MyApp());
+}
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
