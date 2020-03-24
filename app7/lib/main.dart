@@ -1,120 +1,148 @@
-// canvas 画板示例
+// Flutter code sample for Listener
+
+// This example makes a [Container] react to being touched, showing a count of
+// the number of pointer downs and ups.
 
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:touch_indicator/touch_indicator.dart';
 
+bool useGestureDetector = false;
 bool useThrottle = true;
-bool useDrawPath = true;
 
-class SignaturePainter extends CustomPainter {
-  SignaturePainter(this.points);
-
-  final List<Offset> points;
-
-  void paint(Canvas canvas, Size size) {
-    print("paint, useThrottle ${useThrottle}, useDrawPath ${useDrawPath}");
-    Paint paint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-    if (useDrawPath) {
-      Path path = Path();
-      for (int i = 0; i < points.length; i++) {
-        if (points[i] == null) {
-          continue;
-        }
-        if (i + 1 < points.length && points[i + 1] != null) {
-          Path tmpPath = Path(); 
-          tmpPath.moveTo(points[i].dx, points[i].dy);
-          tmpPath.lineTo(points[i+1].dx, points[i+1].dy);
-          path.addPath(tmpPath, Offset(0, 0));
-        }
-      }
-      canvas.drawPath(path, paint);
-    } else {
-      for (int i = 0; i < points.length; i++) {
-        if (points[i] == null) {
-          continue;
-        }
-        if (i + 1 < points.length && points[i + 1] != null) {
-          canvas.drawLine(points[i], points[i+1], paint);
-        }
-      }
-    }
-  }
-
-  bool shouldRepaint(SignaturePainter other) {
-    return other.points != points;
-  }
+void main(List<String> args) {
+  print(args);
+  return runApp(MyApp());
 }
 
-class Signature extends StatefulWidget {
-  SignatureState createState() => new SignatureState();
-}
-
-class SignatureState extends State<Signature> {
-  List<Offset> _points = <Offset>[];
+/// This Widget is the main application widget.
+class MyApp extends StatelessWidget {
+  static const String _title = 'Flutter Code Sample';
 
   @override
-  void initState() {
-    super.initState();
-    _counterSubject.throttleTime(Duration(milliseconds: 16), trailing: true).listen((Offset localPosition) {
-      setState(() {
-        _points = _points;
-      });
-    });
-  }
-  final _counterSubject = BehaviorSubject<Offset>();
-
   Widget build(BuildContext context) {
-    return new Stack(
-      children: [
-        GestureDetector(
-          onPanStart: (DragStartDetails details) {
-            int currTime = new DateTime.now().microsecondsSinceEpoch;
-            int touchTime = details.sourceTimeStamp.inMicroseconds;
-            // print("[dart][flutter app][main.dart][onPanStart]currTime ${currTime}, touchTime ${touchTime}, Transmission time ${currTime - touchTime} microseconds");
-          },
-          onPanUpdate: (DragUpdateDetails details) {
-            int currTime = new DateTime.now().microsecondsSinceEpoch;
-            int touchTime = details.sourceTimeStamp.inMicroseconds;
-            // print("[dart][flutter app][main.dart][onPanUpdate]currTime ${currTime}, touchTime ${touchTime}, Transmission time ${currTime - touchTime} microseconds");
-            RenderBox referenceBox = context.findRenderObject();
-            Offset localPosition =
-            referenceBox.globalToLocal(details.globalPosition);
-            print("onPanUpdate, useThrottle ${useThrottle}, useDrawPath ${useDrawPath}");
-            if (useThrottle) {
-              _counterSubject.add(localPosition);
-              _points = new List.from(_points)..add(localPosition);
-            } else {
-              setState(() {
-                _points = new List.from(_points)..add(localPosition);
-              });
-            }
-          },
-          onPanEnd: (DragEndDetails details) {
-            int currTime = new DateTime.now().microsecondsSinceEpoch;
-            // print("[dart][flutter app][main.dart][onPanEnd]currTime ${currTime}");
-            _points.add(null);
-          },
-        ),
-        CustomPaint(painter: new SignaturePainter(_points))
-      ],
+    return MaterialApp(
+      title: _title,
+      home: Scaffold(
+        // appBar: AppBar(title: const Text(_title)),
+        body: MyStatefulWidget(),
+      ),
     );
   }
 }
 
-class DemoApp extends StatelessWidget {
-  Widget build(BuildContext context) => new Scaffold(body: new Signature());
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
+
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-void main() {
-  runApp(new MaterialApp(
-    home: TouchIndicator(
-      child: new DemoApp(),
-    )
-  ));
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  int _downCounter = 0;
+  int _upCounter = 0;
+  double x = 0.0;
+  double y = 0.0;
+  final _counterSubject = BehaviorSubject<int>();
+
+  @override
+  void initState() {
+    super.initState();
+    _counterSubject
+        .throttleTime(Duration(milliseconds: 16), trailing: true)
+        .listen((int i) {
+      setState(() {
+        x = x;
+        y = y;
+      });
+    });
+  }
+
+  void onPointerDown(PointerEvent details) {
+    int currTime = new DateTime.now().microsecondsSinceEpoch;
+    int touchTime = details.timeStamp.inMicroseconds;
+    print(
+        '[dart][flutter app][main.dart][onPointerDown]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+    // print(details);
+    onPointerMove(details);
+    setState(() {
+      _downCounter++;
+    });
+  }
+
+  void onPointerUp(PointerEvent details) {
+    int currTime = new DateTime.now().microsecondsSinceEpoch;
+    int touchTime = details.timeStamp.inMicroseconds;
+    print(
+        '[dart][flutter app][main.dart][onPointerUp]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+    // print(details);
+    onPointerMove(details);
+    setState(() {
+      _upCounter++;
+    });
+  }
+
+  void onPointerMove(PointerEvent details) {
+    int currTime = new DateTime.now().microsecondsSinceEpoch;
+    int touchTime = details.timeStamp.inMicroseconds;
+    print(
+        '[dart][flutter app][main.dart][onPointerMove]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+    if (useThrottle) {
+      x = details.position.dx;
+      y = details.position.dy;
+      _counterSubject.add(1);
+    } else {
+      setState(() {
+        x = details.position.dx;
+        y = details.position.dy;
+      });
+    }
+    // print(details);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget listenerWidget = Listener(
+      onPointerDown: onPointerDown,
+      onPointerMove: onPointerMove,
+      onPointerUp: onPointerUp,
+      child: Container(
+        color: Colors.lightBlueAccent,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              left: x,
+              top: y,
+              child: Icon(Icons.home, size: 40, color: Colors.black),
+            )
+          ],
+        ),
+      ),
+    );
+    if (useGestureDetector) {
+      return ConstrainedBox(
+        constraints: BoxConstraints.tight(Size(800.0, 400.0)),
+        child: GestureDetector(
+          onPanUpdate: (DragUpdateDetails details) {
+            print('onPanUpdate');
+            print(details);
+            RenderBox referenceBox = context.findRenderObject();
+            Offset localPosition =
+                referenceBox.globalToLocal(details.globalPosition);
+            // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
+            setState(() {
+              x = localPosition.dx;
+              y = localPosition.dy;
+            });
+          },
+          child: listenerWidget,
+        ),
+      );
+    } else {
+      return ConstrainedBox(
+        constraints: BoxConstraints.tight(Size(800.0, 400.0)),
+        child: listenerWidget,
+      );
+    }
+  }
 }
