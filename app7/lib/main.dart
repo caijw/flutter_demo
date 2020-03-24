@@ -91,7 +91,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       pointerUpTime = new DateTime.now().microsecondsSinceEpoch;
       pointerSetStateCount++;
       totalCostTime += (currTime - touchTime);
-      print('[dart][flutter app][main.dart][onPointerUp]pointerDownTime ${pointerDownTime}, pointerUpTime ${pointerUpTime}, pointerSetStateCount ${pointerSetStateCount}, totalCostTime ${totalCostTime}, avarageCostTime ${totalCostTime / pointerSetStateCount}');
+      print('[dart][flutter app][main.dart][onPointerUp]pointerDownTime ${pointerDownTime}, pointerUpTime ${pointerUpTime}, totalEvemtTime ${pointerUpTime - pointerDownTime}, pointerSetStateCount ${pointerSetStateCount}, totalCostTime ${totalCostTime}, avarageCostTime ${totalCostTime / pointerSetStateCount}');
   }
 
   void onPointerMove(PointerEvent details) {
