@@ -64,10 +64,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     print(
         '[dart][flutter app][main.dart][onPointerDown]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
     // print(details);
-    onPointerMove(details);
-    setState(() {
-      _downCounter++;
-    });
+      setState(() {
+        x = details.position.dx;
+        y = details.position.dy;
+      });
   }
 
   void onPointerUp(PointerEvent details) {
@@ -76,10 +76,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     print(
         '[dart][flutter app][main.dart][onPointerUp]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
     // print(details);
-    onPointerMove(details);
-    setState(() {
-      _upCounter++;
-    });
+      setState(() {
+        x = details.position.dx;
+        y = details.position.dy;
+      });
   }
 
   void onPointerMove(PointerEvent details) {
