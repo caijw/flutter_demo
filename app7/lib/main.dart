@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart';
 
-bool useGestureDetector = true;
+bool useGestureDetector = false;
 
 void main(List<String> args) {
   print(args);
