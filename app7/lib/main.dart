@@ -1,56 +1,84 @@
+// Flutter code sample for Listener
+
+// This example makes a [Container] react to being touched, showing a count of
+// the number of pointer downs and ups.
+
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: MyWidget(),
-  ));
-}
+import 'package:flutter/widgets.dart';
 
-class MyWidget extends StatefulWidget {
+void main() => runApp(MyApp());
+
+/// This Widget is the main application widget.
+class MyApp extends StatelessWidget {
+  static const String _title = 'Flutter Code Sample';
+
   @override
-  MyWidgetState createState() {
-    return MyWidgetState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: _title,
+      home: Scaffold(
+        // appBar: AppBar(title: const Text(_title)),
+        body: MyStatefulWidget(),
+      ),
+    );
   }
 }
 
-class MyWidgetState extends State<MyWidget> {
-  int counter = 0;
-  List<String> strings = ['Flutter', 'is', 'cool', "and", "awesome!"];
-  String displayedString = "Hello World!";
-  double _x = 30;
-  double _y = 30;
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
 
-  void onPressOfButton() {
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  int _downCounter = 0;
+  int _upCounter = 0;
+  double x = 0.0;
+  double y = 0.0;
+
+  void _incrementDown(PointerEvent details) {
+    _updateLocation(details);
     setState(() {
-      displayedString = strings[counter];
-      counter = counter < 4 ? counter + 1 : 0;
+      _downCounter++;
+    });
+  }
+
+  void _incrementUp(PointerEvent details) {
+    _updateLocation(details);
+    setState(() {
+      _upCounter++;
+    });
+  }
+
+  void _updateLocation(PointerEvent details) {
+    setState(() {
+      x = details.position.dx;
+      y = details.position.dy;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: GestureDetector(
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  left: _x,
-                  top: _y,
+    return ConstrainedBox(
+      constraints: BoxConstraints.tight(Size(800.0, 400.0)),
+      child: Listener(
+        onPointerDown: _incrementDown,
+        onPointerMove: _updateLocation,
+        onPointerUp: _incrementUp,
+        child: Container(
+          color: Colors.lightBlueAccent,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                  left: x,
+                  top: y,
                   child: Icon(Icons.home, size: 40, color: Colors.black),
-                )
-              ],
-            ),
-            onPanUpdate: (DragUpdateDetails details) {
-              RenderBox referenceBox = context.findRenderObject();
-              Offset localPosition =
-                  referenceBox.globalToLocal(details.globalPosition);
-              // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
-              setState(() {
-                _x = localPosition.dx - 5;
-                _y = localPosition.dy - 5;
-              });
-            }),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
