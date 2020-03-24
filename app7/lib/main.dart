@@ -63,20 +63,32 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints.tight(Size(800.0, 400.0)),
-      child: Listener(
-        onPointerDown: _incrementDown,
-        onPointerMove: _updateLocation,
-        onPointerUp: _incrementUp,
-        child: Container(
-          color: Colors.lightBlueAccent,
-          child: Stack(
-            children: <Widget>[
-              Positioned(
+      child: GestureDetector(
+        onPanUpdate: (DragUpdateDetails details) {
+          RenderBox referenceBox = context.findRenderObject();
+          Offset localPosition =
+              referenceBox.globalToLocal(details.globalPosition);
+          // print('onPanUpdate(${localPosition.dx}, ${localPosition.dy})');
+          setState(() {
+            x = localPosition.dx;
+            y = localPosition.dy;
+          });
+        },
+        child: Listener(
+          onPointerDown: _incrementDown,
+          onPointerMove: _updateLocation,
+          onPointerUp: _incrementUp,
+          child: Container(
+            color: Colors.lightBlueAccent,
+            child: Stack(
+              children: <Widget>[
+                Positioned(
                   left: x,
                   top: y,
                   child: Icon(Icons.home, size: 40, color: Colors.black),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
