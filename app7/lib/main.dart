@@ -49,7 +49,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void initState() {
     super.initState();
     _counterSubject
-        .throttleTime(Duration(milliseconds: 16), trailing: true)
+        .throttleTime(Duration(milliseconds: 50), trailing: true)
         .listen((int i) {
       setState(() {
         x = x;
