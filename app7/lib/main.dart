@@ -66,9 +66,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void onPointerDown(PointerEvent details) {
     int currTime = new DateTime.now().microsecondsSinceEpoch;
     int touchTime = details.timeStamp.inMicroseconds;
-    // print(
-    //     '[dart][flutter app][main.dart][onPointerDown]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
-    // print(details);
+    print(
+        '[dart][flutter app][main.dart][onPointerDown]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+    print(details);
       setState(() {
         x = details.position.dx;
         y = details.position.dy;
@@ -81,9 +81,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void onPointerUp(PointerEvent details) {
     int currTime = new DateTime.now().microsecondsSinceEpoch;
     int touchTime = details.timeStamp.inMicroseconds;
-    // print(
-    //   '[dart][flutter app][main.dart][onPointerUp]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
-    // print(details);
+    print(
+      '[dart][flutter app][main.dart][onPointerUp]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+    print(details);
       setState(() {
         x = details.position.dx;
         y = details.position.dy;
@@ -97,8 +97,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void onPointerMove(PointerEvent details) {
     int currTime = new DateTime.now().microsecondsSinceEpoch;
     int touchTime = details.timeStamp.inMicroseconds;
-    // print(
-    //     '[dart][flutter app][main.dart][onPointerMove]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+    print(
+        '[dart][flutter app][main.dart][onPointerMove]cost ${currTime - touchTime} Microseconds, currTime ${currTime} Microseconds, touchTime ${touchTime} Microseconds.');
+        print(details);
     if (useThrottle) {
       x = details.position.dx;
       y = details.position.dy;
@@ -111,7 +112,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       pointerSetStateCount++;
       totalCostTime += (currTime - touchTime);
     }
-    // print(details);
+
   }
 
   @override
